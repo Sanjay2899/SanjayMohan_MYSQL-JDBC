@@ -157,13 +157,15 @@ WHERE s.SUPP_ID IN (
 
 /*Query 4*/
 CREATE VIEW lowest_expensive_product AS
-SELECT C.CAT_ID,C.CAT_NAME, P.PRO_NAME, MIN(SP.SUPP_PRICE) AS LowestPrice
-FROM category C
-JOIN product P ON C.CAT_ID = P.CAT_ID
-JOIN supplier_pricing SP ON SP.PRO_ID = P.PRO_ID
-GROUP BY C.CAT_ID,C.CAT_NAME, P.PRO_NAME ;
+SELECT C.CAT_ID,C.CAT_NAME, P.PRO_NAME, SP.SUPP_PRICE AS LowestPrice
+FROM product P
+JOIN supplier_pricing SP  ON SP.PRO_ID = P.PRO_ID 
+JOIN category C  ON C.CAT_ID = P.CAT_ID where (C.CAT_ID,SP.SUPP_PRICE) in (SELECT C.CAT_ID,MIN(SP.SUPP_PRICE) AS LowestPrice
+FROM product P
+JOIN supplier_pricing SP  ON SP.PRO_ID = P.PRO_ID 
+JOIN category C  ON C.CAT_ID = P.CAT_ID
+GROUP BY C.CAT_ID ) ;
 SELECT * FROM lowest_expensive_product;
-drop view lowest_expensive_product;
 /*Query 5*/
 SELECT P.PRO_ID, P.PRO_NAME
 FROM product P
